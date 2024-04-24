@@ -3,7 +3,10 @@ from torchvision import transforms
 from data import CustomDataset
 import torch
 import torch.nn as nn
-import torch.optim as Adam
+from torch.optim import Adam
+from model import ImageProcessingModel
+
+device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
 
 # Define the transformations
 transform = transforms.Compose([
@@ -12,8 +15,8 @@ transform = transforms.Compose([
 ])
 
 # Create datasets
-train_dataset = CustomDataset(root_dir='path_to_train_data', transform=transform)
-test_dataset = CustomDataset(root_dir='path_to_test_data', transform=transform)
+train_dataset = CustomDataset(root_dir='/mnt/d/PythonFiles/assignment/dataset/rainy-image-dataset', image_dir='rainy image', label_dir='ground truth', transform=transform)
+test_dataset = CustomDataset(root_dir='/mnt/d/PythonFiles/assignment/ed-udrdr/rainy', image_dir='rainy', label_dir='d rainy', transform=transform)
 
 # Create data loaders
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
@@ -24,29 +27,37 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 # Now you can use these loaders in your training and testing loops
 # Here is a simple example of how to use them in a training loop
 num_epochs = 10
+model = ImageProcessingModel()
+params = model.parameters()
+optimizer = Adam(params, lr=0.001)
 
-optimizer = Adam(model.parameters(), lr=0.001)
+ 
 
 # Assuming you have a loss function named 'criterion'
 criterion = nn.MSELoss()
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
+model = ImageProcessingModel()
+model = model.to(device)
 for epoch in range(num_epochs):
-    for i, images in enumerate(train_loader):
+    for i, (rainy_images, clear_images) in enumerate(train_loader):
+        
         # Move images to the device
-        images = images.to(device)
         
+        rainy_images = rainy_images.to(device)
+        clear_images = clear_images.to(device)
+        print("images moved to device")
+
         # Forward pass
-        outputs = model(images)
-        
+        outputs = model(rainy_images)
+        print("forward pass done")
         # Compute loss
-        loss = criterion(outputs, images)
+        loss = criterion(outputs, clear_images)
         
         # Backward pass and optimize
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         
-        if (i+1) % 100 == 0:
-            print(f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item()}')
+        
+        print(f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item()}')
