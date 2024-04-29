@@ -67,7 +67,7 @@ class RainEstimationNetwork(nn.Module):
             # Add more blocks for a deeper model
         )
         self.conv2 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
-        self.conv3 = nn.Conv2d(128, 3, kernel_size=9, stride=1, padding=4)
+        self.conv3 = nn.Conv2d(128, 128, kernel_size=9, stride=1, padding=4)
 
     def forward(self, x):
         residual = x

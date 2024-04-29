@@ -34,12 +34,19 @@ def train_model(model, train_loader, num_epochs, device):
 
 
 def train_big_model(train_loader,device,num_epochs):
+    print(f'Before:{torch.cuda.memory_allocated()}')
+    
     REN = RainEstimationNetwork().to(device)
-    RCN = RainEstimationNetwork().to(device)
-    DN = RainEstimationNetwork().to(device)
 
+    print(f'After REN:{torch.cuda.memory_allocated()}')
+    RCN = RainEstimationNetwork().to(device)
+    print(f'After RCN:{torch.cuda.memory_allocated()}')
+    DN = RainEstimationNetwork().to(device)
+    print(f'After DN:{torch.cuda.memory_allocated()}')
     enc = Encoder().to(device)
     dec = Decoder().to(device)
+
+    print(f'After ENC DEC:{torch.cuda.memory_allocated()}')
     criterion1 = nn.L1Loss()
     # Define the optimizer
     optimizer = Adam(list(REN.parameters()) + list(RCN.parameters()) + list(DN.parameters()) + list(enc.parameters()) + list(dec.parameters()), lr=0.001)
@@ -52,6 +59,7 @@ def train_big_model(train_loader,device,num_epochs):
             z_gt = z_gt.to(device) 
             x_real = x_real.to(device)
 
+            print(f'{torch.cuda.memory_allocated() * 4 / (1024 ** 3)}')
             # Forward pass
             x_syn_enc = enc(x_syn)
             x_real_enc = enc(x_real)
@@ -87,8 +95,23 @@ def train_big_model(train_loader,device,num_epochs):
             loss.backward()
             optimizer.step()
 
-            print(f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item()}') 
+            print(f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item()}')
 
+            # Save the model
+    # Save the models
+    torch.save({
+            'REN_state_dict': REN.state_dict(),
+            'RCN_state_dict': RCN.state_dict(),
+            'DN_state_dict': DN.state_dict(),
+            'enc_state_dict': enc.state_dict(),
+            'dec_state_dict': dec.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'epoch': epoch,
+            'loss': loss,
+            }, 'models.pth')
+
+ 
+            
 
 
 def test_model(model, test_loader, device):
@@ -122,10 +145,10 @@ train_dataset = CustomDataset(root_dir='/mnt/d/PythonFiles/assignment/dataset/ra
 test_dataset = CustomDataset(root_dir='/mnt/d/PythonFiles/assignment/ed-udrdr/rainy', real_image_dir="/mnt/d/PythonFiles/assignment/dataset/GT-RAIN_train",image_dir='rainy', label_dir='d rainy', num_samples=10,transform=transform)
 
 # Create data loaders.
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
 
 
 # Train and test the model
-train_big_model(train_loader, num_epochs=10, device=device)
+train_big_model(train_loader, num_epochs=1, device=device)
 
