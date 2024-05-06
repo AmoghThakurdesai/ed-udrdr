@@ -1,5 +1,8 @@
 import torch
 import torch.nn as nn
+from res2resblocks import Bottle2neckX
+
+
 
 # Define the Encoder module
 class Encoder(nn.Module):
@@ -62,8 +65,8 @@ class RainEstimationNetwork(nn.Module):
         self.conv1 = nn.Conv2d(64, 64, kernel_size=9, stride=1, padding=4)
         self.relu = nn.ReLU(inplace=True)
         self.residual_blocks = nn.Sequential(
-            ResidualBlock(64),
-            ResidualBlock(64),
+            Bottle2neckX(64,64,64,4),
+            Bottle2neckX(64,64,64,4)
             # Add more blocks for a deeper model
         )
         self.conv2 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
@@ -76,5 +79,5 @@ class RainEstimationNetwork(nn.Module):
         out = self.residual_blocks(out)
         out = self.conv2(out)
         out += residual
-        out = self.conv3(out)
+        # out = self.conv3(out)
         return out
