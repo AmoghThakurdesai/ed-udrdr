@@ -37,7 +37,7 @@ def test_model(model, test_loader, device):
 
             print(f'Test Step [{i+1}/{len(test_loader)}], Loss: {loss.item()}')
 
-modeldict = torch.load("/content/drive/models_07062024_numsamples100_epoch1_Batchsize8.pth")
+modeldict = torch.load("/content/drive/MyDrive/models_07062024_numsamples100_epoch1_Batchsize8.pth")
 
 model_state_dict = modeldict["DN_state_dict"]
 model = RainEstimationNetwork()
