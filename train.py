@@ -114,23 +114,7 @@ def train_big_model(train_loader,device,num_epochs):
             
 
 
-def test_model(model, test_loader, device):
-    model = model.to(device)
-    model.eval()  # Set the model to evaluation mode
-    criterion = nn.MSELoss()
 
-    with torch.no_grad():  # No need to track gradients in testing
-        for i, (rainy_images, clear_images) in enumerate(test_loader):
-            rainy_images = rainy_images.to(device)
-            clear_images = clear_images.to(device)
-
-            # Forward pass
-            outputs = model(rainy_images)
-
-            # Compute loss
-            loss = criterion(outputs, clear_images)
-
-            print(f'Test Step [{i+1}/{len(test_loader)}], Loss: {loss.item()}')
 
 device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
 print(device)
@@ -142,11 +126,10 @@ transform = transforms.Compose([
 
 # Create datasets
 train_dataset = CustomDataset(root_dir='/content/rainy-image-dataset', image_dir='rainy image', label_dir='ground truth', real_image_dir="/content/drive/MyDrive/Machine_Learning/Paper/Custom/GT-RAIN_train",num_samples=10000,transform=transform)
-test_dataset = CustomDataset(root_dir='/content/ed-udrdr/rainy', real_image_dir="/content/drive/MyDrive/Machine_Learning/Paper/Custom/GT-RAIN_train",image_dir='rainy', label_dir='d rainy', num_samples=10,transform=transform)
+
 
 # Create data loaders.
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
 
 
 # Train and test the model
