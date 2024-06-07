@@ -133,19 +133,19 @@ def test_model(model, test_loader, device):
             print(f'Test Step [{i+1}/{len(test_loader)}], Loss: {loss.item()}')
 
 device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
-
+print(device)
 # Define the transformations
 transform = transforms.Compose([
-    transforms.Resize((256, 256)),
+    transforms.Resize((128, 128)),
     transforms.ToTensor(),
 ])
 
 # Create datasets
-train_dataset = CustomDataset(root_dir='/mnt/d/PythonFiles/assignment/dataset/rainy-image-dataset', image_dir='rainy image', label_dir='ground truth', real_image_dir="/mnt/d/PythonFiles/assignment/dataset/GT-RAIN_train",num_samples=30,transform=transform)
-test_dataset = CustomDataset(root_dir='/mnt/d/PythonFiles/assignment/ed-udrdr/rainy', real_image_dir="/mnt/d/PythonFiles/assignment/dataset/GT-RAIN_train",image_dir='rainy', label_dir='d rainy', num_samples=10,transform=transform)
+train_dataset = CustomDataset(root_dir='/content/rainy-image-dataset', image_dir='rainy image', label_dir='ground truth', real_image_dir="/content/drive/MyDrive/Machine_Learning/Paper/Custom/GT-RAIN_train",num_samples=10000,transform=transform)
+test_dataset = CustomDataset(root_dir='/content/ed-udrdr/rainy', real_image_dir="/content/drive/MyDrive/Machine_Learning/Paper/Custom/GT-RAIN_train",image_dir='rainy', label_dir='d rainy', num_samples=10,transform=transform)
 
 # Create data loaders.
-train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
 
 

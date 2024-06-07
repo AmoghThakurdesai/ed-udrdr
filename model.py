@@ -65,11 +65,10 @@ class RainEstimationNetwork(nn.Module):
         self.conv1 = nn.Conv2d(64, 64, kernel_size=9, stride=1, padding=4)
         self.relu = nn.ReLU(inplace=True)
         self.residual_blocks = nn.Sequential(
-            Bottle2neckX(64,128,64,4),
-            Bottle2neckX(128,64,64,4)
+            Bottle2neckX(64,64,64,4)
             # Add more blocks for a deeper model
         )
-        self.conv2 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
         self.conv3 = nn.Conv2d(128, 128, kernel_size=9, stride=1, padding=4)
 
     def forward(self, x):
