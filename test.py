@@ -19,29 +19,45 @@ test_dataset = CustomDataset(root_dir='/content/ed-udrdr/rainy', real_image_dir=
 print(test_dataset)
 test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False)
 print(test_loader)
-def test_model(model, test_loader, device):
-    model = model.to(device)
-    model.eval()  # Set the model to evaluation mode
-    criterion = nn.MSELoss()
+def test_model(model_dict, test_loader, device):
+    DN_state_dict = model_dict["DN_state_dict"]
+    DN = RainEstimationNetwork()
+    DN.load_state_dict(DN_state_dict)
+    DN = DN.to(device)
+    # Set the model to evaluation mode
+    DN.eval()
 
+    enc_state_dict = model_dict["enc_state_dict"]
+    enc = Encoder()
+    enc.load_state_dict(enc_state_dict)
+    enc = enc.to(device)
+    # Set the model to evaluation mode
+    enc.eval()
+
+    dec_state_dict = model_dict["dec_state_dict"]
+    dec = Decoder()
+    dec.load_state_dict(dec_state_dict)
+    dec = dec.to(device)
+    # Set the model to evaluation mode
+    dec.eval()
+
+    criterion = nn.MSELoss()
     with torch.no_grad():  # No need to track gradients in testing
         for i, (x_syn, y_gt, _) in enumerate(test_loader):
             x_syn = x_syn.to(device)
-            print(x_syn)
+            
             y_gt = y_gt.to(device)
-            print(y_gt)
+            
             # Forward pass
-            outputs = model(x_syn)
-
+            x_syn_enc = enc(x_syn)
+            enc_outputs = DN(x_syn_enc)
+            outputs = dec(enc_outputs)
             # Compute loss
             loss = criterion(outputs, y_gt)
 
             print(f'Test Step [{i+1}/{len(test_loader)}], Loss: {loss.item()}')
-
 modeldict = torch.load("/content/drive/MyDrive/models_07062024_numsamples100_epoch1_Batchsize8.pth")
 print(modeldict)
-model_state_dict = modeldict["DN_state_dict"]
-model = RainEstimationNetwork()
-model.load_state_dict(model_state_dict)
-print(model)
-test_model(model, test_loader, device)
+    
+
+test_model(modeldict, test_loader, device)
