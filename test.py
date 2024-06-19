@@ -27,20 +27,6 @@ def test_model(model_dict, test_loader, device):
     # Set the model to evaluation mode
     DN.eval()
 
-    enc_state_dict = model_dict["enc_state_dict"]
-    enc = Encoder()
-    enc.load_state_dict(enc_state_dict)
-    enc = enc.to(device)
-    # Set the model to evaluation mode
-    enc.eval()
-
-    dec_state_dict = model_dict["dec_state_dict"]
-    dec = Decoder()
-    dec.load_state_dict(dec_state_dict)
-    dec = dec.to(device)
-    # Set the model to evaluation mode
-    dec.eval()
-
     criterion = nn.MSELoss()
     with torch.no_grad():  # No need to track gradients in testing
         for i, (x_syn, y_gt, _) in enumerate(test_loader):
@@ -49,12 +35,11 @@ def test_model(model_dict, test_loader, device):
             y_gt = y_gt.to(device)
             
             # Forward pass
-            x_syn_enc = enc(x_syn)
-            enc_outputs = DN(x_syn_enc)
-            outputs = dec(enc_outputs)
+            outputs = DN(x_syn)
+            
             # Compute loss
             loss = criterion(outputs, y_gt)
-
+            print(x_syn, outputs)
             print(f'Test Step [{i+1}/{len(test_loader)}], Loss: {loss.item()}')
 modeldict = torch.load("/content/drive/MyDrive/models_07062024_numsamples100_epoch1_Batchsize8.pth")
 print(modeldict)
