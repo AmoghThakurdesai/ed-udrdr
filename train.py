@@ -45,7 +45,7 @@ def train_big_model(train_loader,device,num_epochs):
     print(f'After DN:{torch.cuda.memory_allocated()}')
     criterion1 = nn.L1Loss()
     # Define the optimizer
-    optimizer = Adam(list(REN.parameters()) + list(RCN.parameters()) + list(DN.parameters()))), lr=0.001)
+    optimizer = Adam(list(REN.parameters()) + list(RCN.parameters()) + list(DN.parameters()), lr=0.001)
 
     for epoch in range(num_epochs):
         for i, (x_syn, y_gt, x_real) in enumerate(train_loader):
