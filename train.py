@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from torch.optim import Adam
 from model import *
-
+from datetime import datetime
 # TODO: Modify the train loader so that the real images can be added alongside the training images
 
 
@@ -94,7 +94,7 @@ def train_big_model(train_loader,device,num_epochs):
             'optimizer_state_dict': optimizer.state_dict(),
             'epoch': epoch,
             'loss': loss,
-            }, 'models.pth')
+            }, f'/content/drive/MyDrive/models_{datetime.now()}_num_epochs={num_epochs}_num_samples={train_loader.dataset.num_samples}.pth')
 
  
             
@@ -115,7 +115,7 @@ train_dataset = CustomDataset(root_dir='/content/rainy-image-dataset', image_dir
 
 
 # Create data loaders.
-train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True)
 
 
 # Train and test the model
