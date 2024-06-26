@@ -1,6 +1,16 @@
 import torch
 import torch.nn as nn
 from res2resblocks import Bottle2neckX
+import matplotlib.pyplot as plt
+
+def imshow(inp, title=None):
+    """Imshow for Tensor."""
+    inp = inp.numpy().transpose((1, 2, 0))
+    plt.imshow(inp)
+    if title is not None:
+        plt.title(title)
+    plt.pause(0.001)
+
 
 class RainEstimationNetwork(nn.Module):
     def __init__(self):
@@ -25,5 +35,7 @@ class RainEstimationNetwork(nn.Module):
         out = self.conv3(out)
         print(out.shape)
         out += residual
-        
+        plt.figure(figsize=(10, 5))
+        imshow(out.cpu().data[0], title="Output")
+        plt.show()
         return out
