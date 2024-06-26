@@ -28,7 +28,7 @@ class RainEstimationNetwork(nn.Module):
     def forward(self, x):
         residual = x
         plt.figure(figsize=(10, 5))
-        imshow(x.cpu().data[0], title="Output")
+        imshow(x.cpu().data[0], title="Input")
         plt.show()
         print(x.shape)        
         out = self.conv0(x)
