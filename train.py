@@ -49,11 +49,16 @@ def train_big_model(train_loader,device,num_epochs):
 
     for epoch in range(num_epochs):
         for i, (x_syn, y_gt, x_real) in enumerate(train_loader):
+            
             x_syn = x_syn.to(device)
             y_gt = y_gt.to(device)
             z_gt = x_syn - y_gt
             z_gt = z_gt.to(device) 
             x_real = x_real.to(device)
+
+            plt.figure(figsize=(10, 5))
+            imshow(z_gt.cpu().data[0], title="Input z_gt")
+            plt.show()
 
             print(f'{torch.cuda.memory_allocated() * 4 / (1024 ** 3)}')
             # Forward pass
@@ -61,6 +66,10 @@ def train_big_model(train_loader,device,num_epochs):
             z_real = REN(x_real)
             
             loss1 = criterion1(z_gt,z_syn)
+
+            plt.figure(figsize=(10, 5))
+            imshow(z_syn.cpu().data[0], title="Input z_syn")
+            plt.show()
 
             rcn_input_syn = x_syn - z_syn
             rcn_input_real = x_real - z_real
