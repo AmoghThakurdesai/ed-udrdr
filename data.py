@@ -31,7 +31,7 @@ class CustomDataset(Dataset):
         # Randomly select an image pair from the synthetic dataset
         synthetic_idx = random.randint(0, len(self.image_files) - 1)
         print(f"Synthetic: {synthetic_idx}")
-        if(self.image_dir == "/content/rainy-image-dataset/rainy image"):
+        if(self.image_dir == "/content/rainy-image-dataset"):
           image_file = self.image_files[synthetic_idx].split('.')[0].split("_")[0] + '_' + str(random.randint(1, 14)) + '.jpg'
         else:
           image_file = self.image_files[synthetic_idx]
@@ -39,11 +39,11 @@ class CustomDataset(Dataset):
         # it doesnt work for any generalised dataset 
         print(f"image file: {image_file}")
         
-        image_path = os.path.join(self.root_dir, self.image_dir, image_file)
+        image_path = os.path.join(self.root_dir, self.image_dir, image_file) # rainy images
         print(f"image_path: {image_path}")
         
         
-        label_path = os.path.join(self.root_dir, self.image_dir, self.image_files[synthetic_idx])
+        label_path = os.path.join(self.root_dir, self.image_dir, self.image_files[synthetic_idx]) # ground truth images 
         print(f"label_path: {label_path}")
         
         
