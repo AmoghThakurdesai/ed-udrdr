@@ -29,7 +29,7 @@ class CustomDataset(Dataset):
 
     def __getitem__(self, idx):
         # Randomly select an image pair from the synthetic dataset
-        synthetic_idx = random.randint(0, len(self.image_files) - 1)
+        synthetic_idx = random.randint(0, len(self.label_files) - 1)
         print(f"Synthetic: {synthetic_idx}")
         if(self.image_dir == "/content/rainy-image-dataset/rainy image"):
           image_file = self.image_files[synthetic_idx].split('.')[0].split("_")[0] + '_' + str(random.randint(1, 14)) + '.jpg'
