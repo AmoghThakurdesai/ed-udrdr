@@ -23,6 +23,7 @@ class CustomDataset(Dataset):
 
         self.label_files = [f for f in sorted(os.listdir(os.path.join(root_dir, label_dir))) if f.endswith('.jpg') or f.endswith('.png')]
         self.num_samples = num_samples
+        print(f"")
 
     def __len__(self):
         return self.num_samples
@@ -32,7 +33,7 @@ class CustomDataset(Dataset):
         synthetic_idx = random.randint(0, len(self.label_files) - 1)
         print(f"Synthetic: {synthetic_idx}")
         if(self.image_dir == "/content/rainy-image-dataset/rainy image"):
-          image_file = self.image_files[synthetic_idx].split('.')[0].split("_")[0] + '_' + str(random.randint(1, 14)) + '.jpg'
+          image_file = str(synthetic_idx + 1) + '_' + str(random.randint(1, 14)) + '.jpg'
         else:
           image_file = self.image_files[synthetic_idx]
         # the above image file construction only works when rainy_image_dataset is considered.
